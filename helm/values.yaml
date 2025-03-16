@@ -1,13 +1,45 @@
-prometheus:
-  enabled: true
-  image: prom/prometheus
-  port: 9090
-grafana:
-  enabled: true
-  image: grafana/grafana
-  adminPassword: admin
+# prometheus:
+#   enabled: true
+#   image: prom/prometheus
+#   port: 9090
+
+# grafana:
+#   enabled: true
+#   image: grafana/grafana
+#   adminUser: admin
+#   adminPassword: admin
+#   service:
+#     type: ClusterIP
+#     port: 3000
+#   ingress:
+#     enabled: true
+#     annotations:
+#       kubernetes.io/ingress.class: nginx
+#       nginx.ingress.kubernetes.io/rewrite-target: /
+#       alb.ingress.kubernetes.io/scheme: internet-facing
+#       alb.ingress.kubernetes.io/security-groups: sg-00d31b0e7a99f5541  # Thay bằng ID của Security Group
+#     hosts:
+#       - grafana.local
+#     path: /
+#     pathType: Prefix
+# values.yaml
+adminUser: admin
+adminPassword: Truong0776234678
+service:
+  type: ClusterIP
   port: 3000
-  ingress:
-    enabled: true
-    hosts:
-      - grafana.local
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/security-groups: sg-00d31b0e7a99f5541
+  hosts:
+    - grafana.local
+  path: /
+  pathType: Prefix
+persistence:
+  enabled: true
+  size: 10Gi
+  storageClassName: "gp2"  # Thay bằng StorageClass phù hợp với EKS (thường là "gp2" hoặc "standard")

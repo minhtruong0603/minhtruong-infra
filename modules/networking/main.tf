@@ -2,6 +2,15 @@ provider "aws" {
   region = var.aws_region
 }
 
+terraform {
+  required_providers {
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.0"
+    }
+  }
+}
+
 # Create VPC
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
@@ -112,14 +121,15 @@ resource "aws_route_table_association" "private" {
 }
 
 #Create Sercurity group
-provider "http" {}
+# provider "http" {}
+
 
 data "http" "my_ip" {
   url = "http://checkip.amazonaws.com/"
 }
 
 locals {
-  my_ip = "${chomp(data.http.my_ip.body)}/32"
+  my_ip = "${chomp(data.http.my_ip.response_body)}/32"
 }
 resource "aws_default_security_group" "vpc_sg" {
   vpc_id = aws_vpc.main.id

@@ -48,10 +48,11 @@ variable "max_size" {
   type        = number
 }
 
-variable "tags" {
-  description = "The tags"
-  type        = map(string)
-}
+# variable "tags" {
+#   description = "The tags"
+#   type        = map(string)
+# }
+
 variable "eks_worker_node_role" {
   description = "EKS worker node role name"
   type = string
@@ -63,7 +64,7 @@ variable "ingress_cidr_blocks" {
 }
 
 variable "eks_cluster_role_name_arm" {
-  description = "IAM role eks cluster"
+  description = "IAM role eks cluster node"
   type = string
 }
 

@@ -33,10 +33,10 @@ variable "ami_type" {
   type        = string
 }
 
-variable "instance_types" {
-  description = "Instance types for EKS node group"
-  type        = string
-}
+# variable "instance_types" {
+#   description = "Instance types for EKS node group"
+#   type        = string
+# }
 
 variable "min_size" {
   description = "Min node in EKS node group"

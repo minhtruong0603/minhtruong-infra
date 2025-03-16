@@ -26,7 +26,12 @@ resource "aws_security_group" "eks_cluster_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  tags = var.tags
+  # tags = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+  role       = var.eks_cluster_role_name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
 resource "aws_eks_cluster" "eks" {
@@ -40,12 +45,15 @@ resource "aws_eks_cluster" "eks" {
   }
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
+
 resource "aws_eks_node_group" "eks_nodes" {
-  cluster_name    = var.cluster_name
+  # cluster_name    = var.cluster_name
+  cluster_name    = aws_eks_cluster.eks.name
   node_group_name = var.eks_node_group_name
   node_role_arn   = var.eks_node_role_arn 
   ami_type        = var.ami_type
   instance_types  = [var.instance_types]
+  # instance_types = ["t3.large"]
   subnet_ids = var.public_subnet_ids 
 
   scaling_config {
