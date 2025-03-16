@@ -1,6 +1,76 @@
-- name: Configure AWS CLI
-  uses: aws-actions/configure-aws-credentials@v2
-  with:
-    aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    aws-region: ap-northeast-1
+name: CI/CD Pipeline for API Service
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: 774305578623.dkr.ecr.ap-northeast-1.amazonaws.com
+          ECR_REPOSITORY: 774305578623.dkr.ecr.ap-northeast-1.amazonaws.com/minhtruong-ecr-repo
+          IMAGE_TAG: latest
+        run: |
+          cd app || exit 1  # Chuyển vào thư mục app (nếu Dockerfile nằm trong app/)
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+# - name: Configure AWS CLI
+#   uses: aws-actions/configure-aws-credentials@v2
+#   with:
+#     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#     aws-region: ap-northeast-1
+
+# name: CI/CD Pipeline for API Service
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build-and-push:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+
+#       - name: Configure AWS CLI
+#         uses: aws-actions/configure-aws-credentials@v2
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ap-northeast-1
+
+#       - name: Login to Amazon ECR
+#         uses: aws-actions/amazon-ecr-login@v1
+
+#       - name: Build, tag, and push image to Amazon ECR
+#         env:
+#           ECR_REGISTRY: 774305578623.dkr.ecr.ap-northeast-1.amazonaws.com
+#           ECR_REPOSITORY: 774305578623.dkr.ecr.ap-northeast-1.amazonaws.com/minhtruong-ecr-repo
+#           IMAGE_TAG: latest
+#         run: |
+#           # cd app || exit 1  # Chuyển vào thư mục app (nếu Dockerfile nằm trong app/)
+#           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+#           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+
