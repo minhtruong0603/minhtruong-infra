@@ -1,0 +1,13 @@
+prometheus:
+  enabled: true
+  image: prom/prometheus
+  port: 9090
+grafana:
+  enabled: true
+  image: grafana/grafana
+  adminPassword: admin
+  port: 3000
+  ingress:
+    enabled: true
+    hosts:
+      - grafana.local

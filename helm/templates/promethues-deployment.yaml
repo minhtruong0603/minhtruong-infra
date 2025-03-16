@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: {{ .Values.prometheus.image }}
+        ports:
+        - containerPort: {{ .Values.prometheus.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+spec:
+  ports:
+  - port: {{ .Values.prometheus.port }}
+    targetPort: {{ .Values.prometheus.port }}
+  selector:
+    app: prometheus
+  type: ClusterIP

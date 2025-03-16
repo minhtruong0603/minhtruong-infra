@@ -1,0 +1,33 @@
+name: Terraform Destroy
+
+on:
+  workflow_dispatch: # Cho phép chạy thủ công nếu cần
+
+jobs:
+  terraform-destroy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ap-northeast-1
+
+    steps:
+      # Bước 1: Checkout mã nguồn từ repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Bước 2: Cài đặt Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      # Bước 3: Khởi tạo Terraform trong thư mục environments/dev
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./environments/dev
+
+      # Bước 4: Chạy Terraform Destroy với auto-approve
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        working-directory: ./environments/dev
